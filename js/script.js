@@ -185,32 +185,23 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    new Card(
-        "img/tabs/vegy.jpg",
-        "vegy",
-        'Меню "Фитнес"',
-        'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-        9,
-        '.menu__field .container'
-    ).render();
+    const getResource = async (url) => {
+        const res = await fetch(url);
 
-    new Card(
-        "img/tabs/elite.jpg",
-        "elite",
-        'Меню “Премиум”',
-        'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-        27,
-        '.menu__field .container'
-    ).render();
+        if(!res.ok) {
+            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+        } else { 
+            return await res.json();
+        }
 
-    new Card(
-        "img/tabs/post.jpg",
-        "post",
-        'Меню "Постное"',
-        'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
-        14,
-        '.menu__field .container'
-    ).render();
+    };
+
+    getResource('http://localhost:3000/menu')
+    .then(data => {
+        data.forEach(({img, altimg, title, descr, price}) => {
+            new Card(img, altimg, title, descr, price, '.menu .container').render();
+        });
+    });
 
     const form = document.querySelectorAll('form');
     const message = {
@@ -252,12 +243,8 @@ window.addEventListener('DOMContentLoaded', () => {
             // request.setRequestHeader('Content-type', 'application/json');
             
             const formData = new FormData(form);
-            const object = {};
-            formData.forEach(function(key, value) {
-                object[key] = value;
-            });
 
-            const json = JSON.stringify(object);
+            const json = JSON.stringify(Object.fromEntries(formData.entries()));
 
             postData('http://localhost:3000/requests', json)
             .then(data => {
