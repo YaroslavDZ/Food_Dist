@@ -420,6 +420,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
         slidesField.style.transform = `translateX(-${offset}px)`;
         currentSlide.textContent = setZero((offset / +width.slice(0, width.length - 2)) + 1);
+
+        dots.forEach(dot => {
+            if (dot.dataset.slideTo == +currentSlide.textContent) {
+                dot.style.opacity = '1';
+            } else {
+                dot.style.opacity = '.5';
+            }
+        });
     }
 
     // currentSlide.textContent = setZero(1);
