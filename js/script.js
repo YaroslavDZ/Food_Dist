@@ -299,16 +299,19 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //Slider
     const offerSlide = document.querySelectorAll('.offer__slide'),
+          slider = document.querySelector('.offer__slider'),
           offerSliderPrev = document.querySelector('.offer__slider-prev'),
           offerSliderNext = document.querySelector('.offer__slider-next'),
           slidesWrapper = document.querySelector('.offer__slider-wrapper'),
           slidesField = document.querySelector('.offer__slider-inner'),
-          width = window.getComputedStyle(slidesWrapper).width;
+          width = window.getComputedStyle(slidesWrapper).width,
+          dots = [];
+
     let currentSlide = document.querySelector('#current'),
         totalSlides = document.querySelector('#total');
 
-    let indexOfActiveSlide = 1;
-    let offset = 0;
+    let offset = 0,
+        indexSlide = (offset / +width.slice(0, width.length - 2)) + 1;
 
     slidesField.style.width = 100 * offerSlide.length + '%';
     slidesField.style.display = 'flex';
@@ -322,8 +325,75 @@ window.addEventListener('DOMContentLoaded', () => {
 
     currentSlide.textContent = setZero(1);
 
+    slider.style.position = 'relative';
+
+    const indicators = document.createElement('ol');
+    indicators.classList.add('carousel-indicators');
+    indicators.style.cssText = `
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 15;
+        display: flex;
+        justify-content: center;
+        margin-right: 15%;
+        margin-left: 15%;
+        list-style: none;
+    `;
+
+    slider.append(indicators);
+
+    for (let i = 0; i < offerSlide.length; ++i) {
+        const dot = document.createElement('li');
+        dot.setAttribute('data-slide-to', i + 1);
+        dot.style.cssText = `
+            box-sizing: content-box;
+            flex: 0 1 auto;
+            width: 30px;
+            height: 6px;
+            margin-right: 3px;
+            margin-left: 3px;
+            cursor: pointer;
+            background-color: #fff;
+            background-clip: padding-box;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            opacity: .5;
+            transition: opacity .6s ease;
+        `;
+
+        indicators.append(dot);
+        dots.push(dot);
+        dots[0].style.opacity = '1';
+    }
+
+    slider.addEventListener('click', (e) => {
+        let target = e.target;
+        if (target.tagName == 'LI') {
+            while (+currentSlide.textContent != +target.dataset.slideTo) {
+                nextSlide();
+            }
+        
+        dots.forEach(dot => {
+            dot.style.opacity = '.5';
+        });
+        target.style.opacity = '1';
+        }
+    });
+
+
+
     offerSliderNext.addEventListener('click', () => {
-        if(offset == +width.slice(0, width.length - 2) * (offerSlide.length - 1)) {
+        nextSlide();
+    });
+
+    offerSliderPrev.addEventListener('click', () => {
+        prevSlide();
+    });
+
+    function nextSlide() {
+        if (offset == +width.slice(0, width.length - 2) * (offerSlide.length - 1)) {
             offset = 0;
         } else {
             offset += +width.slice(0, width.length - 2);
@@ -331,9 +401,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
         slidesField.style.transform = `translateX(-${offset}px)`;
         currentSlide.textContent = setZero((offset / +width.slice(0, width.length - 2)) + 1);
-    });
+    }
 
-    offerSliderPrev.addEventListener('click', () => {
+    function prevSlide() {
         if(offset == 0) {
             offset = +width.slice(0, width.length - 2) * (offerSlide.length - 1);
         } else {
@@ -342,7 +412,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         slidesField.style.transform = `translateX(-${offset}px)`;
         currentSlide.textContent = setZero((offset / +width.slice(0, width.length - 2)) + 1);
-    });
+    }
 
     // currentSlide.textContent = setZero(1);
     // totalSlides.textContent = setZero(offerSlide.length);
