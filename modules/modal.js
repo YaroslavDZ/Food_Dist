@@ -135,4 +135,4 @@ function bindPostData(form) {
         }
     }
 }
-module.exports = modal;
+export default modal;

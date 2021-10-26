@@ -1,11 +1,11 @@
-window.addEventListener('DOMContentLoaded', () => {
-    const tabs = require('../modules/tabs.js'),
-          modal = require('../modules/modal.js'),
-          slider = require('../modules/slider.js'),
-          calculator = require('../modules/calculator.js'),
-          timer = require('../modules/timer.js'),
-          cards = require('../modules/cards.js');
+import tabs from '../modules/tabs.js';
+import modal from '../modules/modal.js';
+import slider from '../modules/slider.js';
+import calculator from '../modules/calculator.js';
+import timer from '../modules/timer.js';
+import cards from '../modules/cards.js';
 
+window.addEventListener('DOMContentLoaded', () => {
     calculator();
     timer();
     tabs();
