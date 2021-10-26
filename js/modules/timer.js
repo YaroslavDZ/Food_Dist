@@ -1,5 +1,4 @@
-function timer() {
-    let deadline = '2021-012-30';
+function timer(id, deadline) {
 
     function getTimeRemaining(endtime) {
         const diffTime = Date.parse(endtime) - new Date(),
@@ -53,7 +52,7 @@ function timer() {
         }
     }
 
-    setClock('.timer', deadline);
+    setClock(id, deadline);
 }
 
 export default timer;
